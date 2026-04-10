@@ -1,15 +1,16 @@
-export default function StudioPage() {
+import { sql } from "@/lib/db";
+import type { Project } from "@/lib/types";
+import StudioForm from "./studio-form";
+
+export default async function StudioPage() {
+  const projects = (await sql`
+    SELECT id, name, slug, description, created_at FROM projects ORDER BY name
+  `) as Project[];
+
   return (
     <div>
       <h1 className="text-2xl font-semibold mb-6">Studio</h1>
-      <div className="card p-6">
-        <p className="text-sm mb-4" style={{ color: "var(--color-muted)" }}>
-          Editor script + preview. À implémenter phase 1 : formulaire (titre, hook, body, CTA, projet) + Server Action save.
-        </p>
-        <p className="text-sm" style={{ color: "var(--color-muted)" }}>
-          Phase suivante : intégration Claude pour générer le script depuis un brief, estimation durée, export vers ElevenLabs.
-        </p>
-      </div>
+      <StudioForm projects={projects} />
     </div>
   );
 }
